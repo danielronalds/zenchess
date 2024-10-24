@@ -1,11 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
 
-func add(x, y int) int {
-	return x + y
-}
+	"github.com/danielronalds/zenchess/handlers"
+)
 
 func main() {
-	fmt.Println("hello, world!")
+	port := 3000
+
+	mux := http.NewServeMux()
+
+	healthHandler := handlers.HealthHandler{}
+	mux.HandleFunc("GET /health", healthHandler.HandleGetHealth)
+
+	fmt.Printf("Serving on port %v", port)
+	http.ListenAndServe(fmt.Sprintf(":%v", port), mux)
 }
