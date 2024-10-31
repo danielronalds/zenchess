@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/danielronalds/zenchess/handlers"
+	m "github.com/danielronalds/zenchess/middleware"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	healthHandler := handlers.HealthHandler{}
-	mux.HandleFunc("GET /health", healthHandler.HandleGetHealth)
+	mux.HandleFunc("GET /health", m.Logging(healthHandler.HandleGetHealth))
 
 	printAsciiBanner(port)
 	http.ListenAndServe(fmt.Sprintf(":%v", port), mux)
