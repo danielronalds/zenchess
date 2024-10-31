@@ -2,7 +2,7 @@ list:
    just -l
 
 dev:
-   go run .
+   dotenvx run -- go run .
 
 test:
    go test github.com/danielronalds/zenchess/...
