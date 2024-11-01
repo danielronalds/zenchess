@@ -1,18 +1,26 @@
 list:
    just -l
 
+setup:
+    go mod tidy
+    cp -n .env.example .env
+
 dev:
-   dotenvx run -- go run .
+    dotenvx run -- go run .
 
 test:
-   go test github.com/danielronalds/zenchess/...
+    go test github.com/danielronalds/zenchess/...
 
 fmt:
-   go fmt github.com/danielronalds/zenchess/...
+    go fmt github.com/danielronalds/zenchess/...
 
 build:
-  rm -rf build
-  mkdir build
+    just setup
 
-  go build .
-  mv zenchess build/
+    rm -rf build
+    mkdir build
+
+    go build .
+    mv zenchess build/
+
+    cp .env build/
