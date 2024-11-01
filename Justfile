@@ -9,6 +9,9 @@ setup:
 dev:
     dotenvx run -- go run .
 
+fdev:
+    cd frontend && npm run dev
+
 css:
     cd frontend && npm run css
 

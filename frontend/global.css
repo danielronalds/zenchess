@@ -1,3 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.chesspiece {
+    width: 100%;
+    height: 100%;
+    background-image: url("../assets/piecesSprite.svg");
+    /*
+     * FIXME: Actually scale this image, looks blury currently
+     * */
+    background-size: 540px 180px;
+}
+
+.whiteKing {
+    background-position: 0 0;
+}
+
+.whiteQueen {
+    background-position: -90px 0;
+}
+
+.whiteBishop {
+    background-position: -180px 0;
+}
+
+.whiteKnight {
+    background-position: -270px 0;
+}
+
+.whiteRook {
+    background-position: -360px 0;
+}
+
+.whitePawn {
+    background-position: -450px 0;
+}
+
+.blackKing {
+    background-position: 0 -90px;
+}
+
+.blackQueen {
+    background-position: -90px -90px;
+}
+
+.blackBishop {
+    background-position: -180px -90px;
+}
+
+.blackKnight {
+    background-position: -270px -90px;
+}
+
+.blackRook {
+    background-position: -360px -90px;
+}
+
+.blackPawn {
+    background-position: -450px -90px;
+}
