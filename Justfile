@@ -9,6 +9,9 @@ setup:
 dev:
     dotenvx run -- go run .
 
+css:
+    cd frontend && npm run css
+
 test:
     go test github.com/danielronalds/zenchess/...
 
