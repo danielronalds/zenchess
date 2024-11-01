@@ -32,6 +32,7 @@ build:
 
     mkdir build/frontend
     cp -r frontend/bin build/frontend/
+    cp -r frontend/assets build/frontend/
     cp frontend/index.html build/frontend/
 
     cp .env build/
