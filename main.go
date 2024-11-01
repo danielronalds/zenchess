@@ -17,6 +17,8 @@ func main() {
 	healthHandler := handlers.HealthHandler{}
 	mux.HandleFunc("GET /health", m.Logging(healthHandler.HandleGetHealth))
 
+	mux.Handle("GET /", http.FileServer(http.Dir("./frontend")))
+
 	printAsciiBanner(port)
 	http.ListenAndServe(port, mux)
 }

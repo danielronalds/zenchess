@@ -3,6 +3,7 @@ list:
 
 setup:
     go mod tidy
+    cd frontend && npm install && npm run build
     cp -n .env.example .env
 
 dev:
@@ -22,5 +23,9 @@ build:
 
     go build .
     mv zenchess build/
+
+    mkdir build/frontend
+    cp -r frontend/bin build/frontend/
+    cp frontend/index.html build/frontend/
 
     cp .env build/
