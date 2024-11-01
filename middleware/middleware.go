@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -30,7 +31,7 @@ func Logging(next func(http.ResponseWriter, *http.Request)) func(http.ResponseWr
 			requestBody = string(bodyBytes)
 		}
 
-		fmt.Printf(
+		log := fmt.Sprintf(
 			"%v %v [%v] '%v %v' %v %v\n",
 			r.RemoteAddr,
 			r.Host,
@@ -40,6 +41,39 @@ func Logging(next func(http.ResponseWriter, *http.Request)) func(http.ResponseWr
 			requestBody,
 			r.UserAgent(),
 		)
+
+		fmt.Printf(log)
+		go writeLogToFile(log)
+
 		next(w, r)
 	})
+}
+
+// Writes the given log to the designated log file
+//
+// NOTE: If the env var `ZENCHESS_LOGFILE` is not defined, then no logfile is written to
+func writeLogToFile(log string) {
+	logfile := os.Getenv("ZENCHESS_LOGFILE")
+
+	if len(logfile) == 0 {
+		return
+	}
+
+	requestTime := time.Now()
+	year, month, day := requestTime.Date()
+	hour, minute, second := requestTime.Clock()
+	date := time.Date(year, month, day, hour, minute, second, requestTime.Nanosecond(), time.Local)
+
+	file, err := os.OpenFile(logfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0740) // Need to fix permission code
+	if err != nil {
+		fmt.Printf("[file] unable to open logfile [%v] %v\n", date.Format(time.UnixDate), err.Error())
+		return
+	}
+	defer file.Close()
+
+	_, err = file.Write([]byte(log))
+	if err != nil {
+		fmt.Printf("[file] unable to write logfile [%v] %v\n", date.Format(time.UnixDate), err.Error())
+	}
+
 }
