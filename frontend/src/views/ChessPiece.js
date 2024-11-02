@@ -1,40 +1,12 @@
 import m from "mithril";
-
-const getPieceClass = (pieceId) => {
-  switch (pieceId) {
-    case 1:
-      return ".whiteKing"
-    case 2:
-      return ".whiteQueen"
-    case 3:
-      return ".whiteBishop"
-    case 4:
-      return ".whiteKnight"
-    case 5:
-      return ".whiteRook"
-    case 6:
-      return ".whitePawn"
-    case 7:
-      return ".blackKing"
-    case 8:
-      return ".blackQueen"
-    case 9:
-      return ".blackBishop"
-    case 10:
-      return ".blackKnight"
-    case 11:
-      return ".blackRook"
-    case 12:
-    default:
-      return ".blackPawn"
-  }
-}
+import { getPieceString } from "../utils";
 
 const ChessPiece = {
   view: (vn) => {
     if (vn.attrs.piece == 0) return;
 
-    return m("div.chesspiece " + getPieceClass(vn.attrs.piece), "")
+    return m("div.chesspiece ." + getPieceString(vn.attrs.piece), !vn.attrs.isSelected ? "" :
+      m("div", { class: "z-2 relative top-0 left-0 border-4 border-red-500 w-full h-full" }))
   }
 };
 
