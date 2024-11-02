@@ -1,5 +1,6 @@
 import m from "mithril";
 import ChessPiece from "./ChessPiece";
+import { isPlayerPiece } from "../utils";
 
 /**
  * Figures out what colour the square given at coordinates x,y should be
@@ -34,41 +35,53 @@ const calculateSquareRounding = (x, y) => {
   return "";
 }
 
+/**
+ * The mouse down event for each chessboard square
+ *
+ * @param {number} pieceId
+ * @param {number} x
+ * @param {number} y
+ */
+const handleSquareDown = (pieceId, x, y,) => {
+  if (pieceId == 0) return;
+  Chessboard.selectedPiece = null;
+
+  if (!isPlayerPiece(pieceId, Chessboard.player)) return;
+
+  Chessboard.selectedPiece = { pieceId, x, y }
+}
+
 const Chessboard = {
   board: [
-    [11, 10, 9, 8, 7, 9, 10, 11],
-    [12, 12, 12, 12, 12, 12, 12, 12],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [6, 6, 6, 6, 6, 6, 6, 6],
-    [5, 4, 3, 2, 1, 3, 4, 5],
+    [11, 10, 9,  8,  0,  11,  7, 0],
+    [12, 12, 12, 12, 12, 0,  9, 12],
+    [0,  0,  0,  0,  0,  10,  12,  0],
+    [0,  0,  0,  0,  0,  12,  0,  0],
+    [0,  0,  0,  6,  0,  3,  0,  0],
+    [0,  0,  6,  3,  6,  4,  0,  0],
+    [6,  6,  2,  4,  0,  6,  6,  6],
+    [5,  0,  0,  0,  1,  0,  0,  5],
   ],
+  player: null,
   selectedPiece: null,
   view: (vn) => {
     const squareSize = vn.attrs.size / 8;
+
+    Chessboard.player = vn.attrs.player;
 
     return m("div", {
       class: "flex flex-col gap-0 rounded-xl shadow-2xl"
     }, Chessboard.board.map((row, x) => m("div", {
       class: "flex flex-row gap-0"
-    }, row.map((piece, y) => {
-      const colour = calculateSquareColour(x, y);
-      const rounding = calculateSquareRounding(x, y);
+    }, row.map((pieceId, y) => {
+      const isSelected = !!Chessboard.selectedPiece
+        && x === Chessboard.selectedPiece.x
+        && y === Chessboard.selectedPiece.y;
 
-      const isSelected = !!Chessboard.selectedPiece && x === Chessboard.selectedPiece.x && y === Chessboard.selectedPiece.y;
-      console.log(isSelected);
-
-      return m("div." + colour + rounding, {
+      return m("div." + calculateSquareColour(x, y) + calculateSquareRounding(x, y), {
         style: "width: " + squareSize + "px; height: " + squareSize + "px;",
-        onclick: () => {
-          if (piece == 0) return;
-
-          Chessboard.selectedPiece = { piece, x, y }
-          console.log(Chessboard.selectedPiece)
-        }
-      }, m(ChessPiece, { piece, isSelected }))
+        onmousedown: () => handleSquareDown(pieceId, x, y)
+      }, m(ChessPiece, { pieceId, isSelected }))
     }))))
   },
 };

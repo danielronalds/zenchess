@@ -32,3 +32,17 @@ export const getPieceString = (pieceId) => {
       return "blackPawn"
   }
 }
+
+/**
+ * Returns true if the piece with the id belongs to the player
+ *
+ * @param {number} pieceId The id of the piece to check
+ * @param {string} The pieces the player is using either "black" or "white"
+ */
+export const isPlayerPiece = (pieceId, player) => {
+  const piece = getPieceString(pieceId);
+
+  const pieceColour = piece.substring(0,5);
+
+  return pieceColour === player.toLowerCase();
+}
