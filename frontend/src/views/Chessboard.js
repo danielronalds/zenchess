@@ -1,6 +1,7 @@
 import m from "mithril";
 import ChessPiece from "./ChessPiece";
 import { isPlayerPiece } from "../utils";
+import ChessGame from "../models/ChessGame";
 
 /**
  * Figures out what colour the square given at coordinates x,y should be
@@ -44,39 +45,27 @@ const calculateSquareRounding = (x, y) => {
  */
 const handleSquareDown = (pieceId, x, y,) => {
   if (pieceId == 0) return;
-  Chessboard.selectedPiece = null;
+  ChessGame.selectedPiece = null;
 
-  if (!isPlayerPiece(pieceId, Chessboard.player)) return;
+  if (!isPlayerPiece(pieceId, ChessGame.player)) return;
 
-  Chessboard.selectedPiece = { pieceId, x, y }
+  ChessGame.selectedPiece = { pieceId, x, y }
 }
 
 const Chessboard = {
-  board: [
-    [11, 10, 9,  8,  0,  11,  7, 0],
-    [12, 12, 12, 12, 12, 0,  9, 12],
-    [0,  0,  0,  0,  0,  10,  12,  0],
-    [0,  0,  0,  0,  0,  12,  0,  0],
-    [0,  0,  0,  6,  0,  3,  0,  0],
-    [0,  0,  6,  3,  6,  4,  0,  0],
-    [6,  6,  2,  4,  0,  6,  6,  6],
-    [5,  0,  0,  0,  1,  0,  0,  5],
-  ],
-  player: null,
-  selectedPiece: null,
   view: (vn) => {
     const squareSize = vn.attrs.size / 8;
 
-    Chessboard.player = vn.attrs.player;
+    ChessGame.player = vn.attrs.player;
 
     return m("div", {
       class: "flex flex-col gap-0 rounded-xl shadow-2xl"
-    }, Chessboard.board.map((row, x) => m("div", {
+    }, ChessGame.board.map((row, x) => m("div", {
       class: "flex flex-row gap-0"
     }, row.map((pieceId, y) => {
-      const isSelected = !!Chessboard.selectedPiece
-        && x === Chessboard.selectedPiece.x
-        && y === Chessboard.selectedPiece.y;
+      const isSelected = !!ChessGame.selectedPiece
+        && x === ChessGame.selectedPiece.x
+        && y === ChessGame.selectedPiece.y;
 
       return m("div." + calculateSquareColour(x, y) + calculateSquareRounding(x, y), {
         style: "width: " + squareSize + "px; height: " + squareSize + "px;",
