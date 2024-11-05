@@ -102,29 +102,58 @@ export const calculateAvailableSquares = (board, pieceId, x, y) => {
 }
 
 const calculateAvailableSquaresPawn = (board, x, y, isWhite) => {
-  const availableSqaures = []
+  // NOTE: Add prompotion and en passant
+  const availableSquaresWhitePawn = () => {
+    const availableSqaures = []
 
-  if (isWhite) {
-    if (y == 7) {// second rank
+    // x
+    // x
+    // p
+    if (y == 6) {// second rank
       const longY = y - 2;
       if (board[longY][x] == 0) availableSqaures.push({ x, y: longY });
     }
 
     const newY = y - 1;
     if (newY > 0 && board[newY][x] == 0) availableSqaures.push({ x, y: newY });
+
+    // x x  if pieces that can be taken are there
+    //  p
+    if (y - 1 >= 0) {
+      if (x - 1 > 0 && board[y - 1][x - 1] > 6) availableSqaures.push({ x: x - 1, y: y - 1 });
+      if (x + 1 < board.length && board[y - 1][x + 1] > 6) availableSqaures.push({ x: x + 1, y: y - 1 });
+    }
+
     return availableSqaures;
   }
 
-  if (y == 1) {// 7th rank
-    const longY = y + 2;
-    if (board[longY][x] == 0) availableSqaures.push({ x, y: longY });
+  const availableSqauresBlackPawn = () => {
+    const availableSqaures = []
+
+    // x
+    // x
+    // p
+    if (y == 1) {// 7th rank
+      const longY = y + 2;
+      if (board[longY][x] == 0) availableSqaures.push({ x, y: longY });
+    }
+
+    const newY = y + 1;
+    if (newY < board.length && board[newY][x] == 0) availableSqaures.push({ x, y: newY });
+
+    // x x  if pieces that can be taken are there
+    //  p
+    if (y + 1 < board.length) {
+      if (x - 1 > 0 && board[y + 1][x - 1] < 7 && board[y + 1][x - 1] !== 0)
+        availableSqaures.push({ x: x - 1, y: y + 1 });
+      if (x + 1 < board.length && board[y + 1][x + 1] < 7 && board[y + 1][x + 1] !== 0)
+        availableSqaures.push({ x: x + 1, y: y + 1 });
+    }
+
+    return availableSqaures;
   }
 
-  const newY = y + 1;
-  if (newY < board.length && board[newY][x] == 0) availableSqaures.push({ x, y: longY });
-
-  console.log(availableSqaures);
-  return availableSqaures;
+  return isWhite ? availableSquaresWhitePawn() : availableSqauresBlackPawn();
 }
 
 const calculateAvailableSquaresKnight = (board, x, y, isWhite) => {
@@ -141,27 +170,27 @@ const calculateAvailableSquaresKnight = (board, x, y, isWhite) => {
   // 4  x x
 
   if (y - 2 >= 0) {
-    if (x - 1 >= 0) possibleMoves.push({ x: x - 1, y: y - 2})
-    if (x + 1 < chessboardSize) possibleMoves.push({ x: x + 1, y: y - 2})
+    if (x - 1 >= 0) possibleMoves.push({ x: x - 1, y: y - 2 })
+    if (x + 1 < chessboardSize) possibleMoves.push({ x: x + 1, y: y - 2 })
   }
 
   if (y - 1 >= 0) {
-    if (x - 2 >= 0) possibleMoves.push({ x: x - 2, y: y - 1})
-    if (x + 2 < chessboardSize) possibleMoves.push({ x: x + 2, y: y - 1})
+    if (x - 2 >= 0) possibleMoves.push({ x: x - 2, y: y - 1 })
+    if (x + 2 < chessboardSize) possibleMoves.push({ x: x + 2, y: y - 1 })
   }
 
   if (y + 1 < chessboardSize) {
-    if (x - 2 >= 0) possibleMoves.push({ x: x - 2, y: y + 1})
-    if (x + 2 < chessboardSize) possibleMoves.push({ x: x + 2, y: y + 1})
+    if (x - 2 >= 0) possibleMoves.push({ x: x - 2, y: y + 1 })
+    if (x + 2 < chessboardSize) possibleMoves.push({ x: x + 2, y: y + 1 })
   }
 
   if (y + 2 < chessboardSize) {
-    if (x - 1 >= 0) possibleMoves.push({ x: x - 1, y: y + 2})
-    if (x + 1 < chessboardSize) possibleMoves.push({ x: x + 1, y: y + 2})
+    if (x - 1 >= 0) possibleMoves.push({ x: x - 1, y: y + 2 })
+    if (x + 1 < chessboardSize) possibleMoves.push({ x: x + 1, y: y + 2 })
   }
 
   return possibleMoves.filter(p => {
-    square = ChessGame.board[p.y][p.x];
+    square = board[p.y][p.x];
     if (isWhite) {
       return square == 0 || square > 6; // > 6 is black pieces
     }
