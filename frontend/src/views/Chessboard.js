@@ -1,7 +1,8 @@
 import m from "mithril";
 import ChessPiece from "./ChessPiece";
-import { isPlayerPiece, calculateSquareColour, calculateSquareRounding, calculateAvailableSquares } from "../utils";
+import { isPlayerPiece, calculateSquareColour, calculateSquareRounding } from "../utils";
 import ChessGame from "../models/ChessGame";
+import calculateAvailableSquares from "../movementCalculation";
 
 
 /**
