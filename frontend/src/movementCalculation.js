@@ -98,6 +98,47 @@ const calculateAvailableSquaresKnight = (board, x, y, isWhite) => {
   });
 }
 
+const calculateAvailableSquaresRook = (board, x, y, isWhite) => {
+  // Simple function for determing if a square is a valid square to move
+  const isValidSquare = (fx, fy) => board[fy][fx] === 0 || isEnemyPiece(fx, fy)
+
+  // Determines if there is an enemy piece at the given square
+  const isEnemyPiece = (fx, fy) => (isWhite && board[fy][fx] > 6)
+                                   || (!isWhite && board[fy][fx] < 7 && board[fy][fx] !== 0)
+
+  const availableSquares = [];
+
+  leftX = x - 1;
+  while (leftX >= 0 && isValidSquare(leftX, y)) {
+    availableSquares.push({ x: leftX, y })
+    if (isEnemyPiece(leftX, y)) break;
+    leftX -= 1;
+  }
+
+  rightX = x + 1;
+  while (rightX < board.length && isValidSquare(rightX, y)) {
+    availableSquares.push({ x: rightX, y })
+    if (isEnemyPiece(rightX, y)) break;
+    rightX += 1;
+  }
+
+  upY = y - 1;
+  while (upY >= 0 && isValidSquare(x, upY)) {
+    availableSquares.push({ x, y: upY })
+    if (isEnemyPiece(x, upY)) break;
+    upY -= 1;
+  }
+
+  downY = y + 1;
+  while (downY < board.length && isValidSquare(x, downY)) {
+    availableSquares.push({ x, y: downY })
+    if (isEnemyPiece(x, downY)) break;
+    downY += 1;
+  }
+
+  return availableSquares;
+}
+
 /**
  * Figures out what sqaures are available to the piece in the given location
  */
@@ -112,6 +153,9 @@ const calculateAvailableSquares = (board, pieceId, x, y) => {
     case "whiteKnight":
     case "blackKnight":
       return calculateAvailableSquaresKnight(board, x, y, isWhite);
+    case "whiteRook":
+    case "blackRook":
+      return calculateAvailableSquaresRook(board, x, y, isWhite);
     default:
       return [];
   }
