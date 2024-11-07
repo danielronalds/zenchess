@@ -201,6 +201,10 @@ const calculateAvailableSquaresBishop = (board, x, y, isWhite) => {
   return availableSquares;
 }
 
+const calculateAvailableSquaresQueen = (board, x, y, isWhite) => []
+  .concat(calculateAvailableSquaresRook(board, x, y, isWhite))
+  .concat(calculateAvailableSquaresBishop(board, x, y, isWhite))
+
 /**
  * Figures out what sqaures are available to the piece in the given location
  */
@@ -221,6 +225,9 @@ const calculateAvailableSquares = (board, pieceId, x, y) => {
     case "whiteBishop":
     case "blackBishop":
       return calculateAvailableSquaresBishop(board, x, y, isWhite);
+    case "whiteQueen":
+    case "blackQueen":
+      return calculateAvailableSquaresQueen(board, x, y, isWhite);
     default:
       return [];
   }
