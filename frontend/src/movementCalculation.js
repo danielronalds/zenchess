@@ -1,4 +1,4 @@
-import { getPieceString, isPlayerPiece } from "./utils";
+import { BlackBishopId, BlackKnightId, BlackRookId, BlackQueenId, WhiteBishopId, WhiteKnightId, WhiteRookId, WhiteQueenId, getPieceString, isPlayerPiece, BlackKingId, WhiteKingId, BlackPawnId, WhitePawnId } from "./utils";
 
 /**
  * Simple function for determing if a square is a valid square to move
@@ -27,9 +27,9 @@ const isEmptySquare = (board, x, y) => isInBoard(board, x, y) && board[y][x] ===
  * @param {number} y
  * @returns {boolean} True if the given square contains an enemy piece
  */
-const isEnemyPiece = (board, x, y, isWhite) => isInBoard(board, x, y) 
+const isEnemyPiece = (board, x, y, isWhite) => isInBoard(board, x, y)
   && ((isWhite && board[y][x] > 6)
-  || (!isWhite && board[y][x] < 7 && board[y][x] !== 0));
+    || (!isWhite && board[y][x] < 7 && board[y][x] !== 0));
 
 
 const calculateAvailableSquaresPawn = (board, x, y, isWhite) => {
@@ -192,7 +192,80 @@ const calculateAvailableSquaresBishop = (board, x, y, isWhite) => {
 
 const calculateAvailableSquaresQueen = (board, x, y, isWhite) => []
   .concat(calculateAvailableSquaresRook(board, x, y, isWhite))
-  .concat(calculateAvailableSquaresBishop(board, x, y, isWhite))
+  .concat(calculateAvailableSquaresBishop(board, x, y, isWhite));
+
+const isInCheck = (board, s, isWhite) => {
+  const { x, y } = s;
+  // Still using the same isWhite, as it will only include squares that are empty, or contain an enemy piece
+  const inCheckFromKnight = () => {
+    const knightMoves = calculateAvailableSquaresKnight(board, x, y, isWhite);
+    const knight = knightMoves.find(s => board[s.y][s.x] === (isWhite ? BlackKnightId : WhiteKnightId));
+    return knight !== undefined;
+  };
+
+  const inCheckFromBishopOrQueen = () => {
+    const bishopMoves = calculateAvailableSquaresBishop(board, x, y, isWhite);
+    const bishopOrQueen = bishopMoves.find(s => {
+      const pieceId = board[s.y][s.x]
+      return pieceId === (isWhite ? BlackBishopId : WhiteBishopId)
+        || pieceId === (isWhite ? BlackQueenId : WhiteQueenId)
+    })
+    return bishopOrQueen !== undefined;
+  };
+
+  const inCheckFromRookOrQueen = () => {
+    const rookMoves = calculateAvailableSquaresRook(board, x, y, isWhite);
+    const rookOrQueen = rookMoves.find(s => {
+      const pieceId = board[s.y][s.x]
+      return pieceId === (isWhite ? BlackRookId : WhiteRookId)
+        || pieceId === (isWhite ? BlackQueenId : WhiteQueenId)
+    })
+    return rookOrQueen !== undefined;
+  };
+
+  const inCheckFromKing = () => {
+    const kingMoves = calculateAvailableSquaresKing(board, x, y, isWhite);
+    const king = kingMoves.find(s => board[s.y][s.x] === (isWhite ? BlackKingId : WhiteKingId));
+    return king !== undefined;
+  }
+
+  const inCheckFromPawn = () => {
+    const pawnMoves = [
+      { x: x + 1, y: y - 1 },
+      { x: x - 1, y: y - 1 },
+      { x: x + 1, y: y + 1 },
+      { x: x - 1, y: y + 1 },
+    ]
+
+    const startSlice = isWhite ? 0 : 2
+    const endSlice = isWhite ? 2 : 4
+
+    const pawn = pawnMoves.slice(startSlice, endSlice).find(s => board[s.y][s.x] === (isWhite ? BlackPawnId : WhitePawnId));
+
+    return pawn !== undefined;
+  }
+
+  return inCheckFromKnight()
+    || inCheckFromRookOrQueen()
+    || inCheckFromBishopOrQueen()
+    || inCheckFromKing()
+    || inCheckFromPawn();
+}
+
+const calculateAvailableSquaresKing = (board, x, y, isWhite) => {
+  const availableSquares = [
+    { x: x - 1, y: y - 1 },
+    { x, y: y - 1 },
+    { x: x + 1, y: y - 1 },
+    { x: x - 1, y },
+    { x: x + 1, y },
+    { x: x - 1, y: y + 1 },
+    { x, y: y + 1 },
+    { x: x + 1, y: y + 1 },
+  ].filter(s => isValidSquare(board, s.x, s.y, isWhite));
+
+  return availableSquares;
+}
 
 /**
  * Figures out what sqaures are available to the piece in the given location
@@ -217,6 +290,11 @@ const calculateAvailableSquares = (board, pieceId, x, y) => {
     case "whiteQueen":
     case "blackQueen":
       return calculateAvailableSquaresQueen(board, x, y, isWhite);
+    case "whiteKing":
+    case "blackKing":
+      // Filter call happens here as isInCheck calls calculateAvailableSquaresKing, and leads to 
+      // strange behaviour if done in the funciton itself
+      return calculateAvailableSquaresKing(board, x, y, isWhite).filter(s => !isInCheck(board, s, isWhite));
     default:
       return [];
   }

@@ -1,5 +1,18 @@
 import ChessGame from "./models/ChessGame"
 
+export const WhiteKingId = 1;
+export const WhiteQueenId = 2;
+export const WhiteBishopId = 3;
+export const WhiteKnightId = 4;
+export const WhiteRookId = 5;
+export const WhitePawnId = 6;
+export const BlackKingId = 7;
+export const BlackQueenId = 8;
+export const BlackBishopId = 9;
+export const BlackKnightId = 10;
+export const BlackRookId = 11;
+export const BlackPawnId = 12;
+
 /**
  * Translates a piece id into the string of what the piece is
  *
@@ -7,29 +20,29 @@ import ChessGame from "./models/ChessGame"
  */
 export const getPieceString = (pieceId) => {
   switch (pieceId) {
-    case 1:
+    case WhiteKingId:
       return "whiteKing";
-    case 2:
+    case WhiteQueenId:
       return "whiteQueen";
-    case 3:
+    case WhiteBishopId:
       return "whiteBishop";
-    case 4:
+    case WhiteKnightId:
       return "whiteKnight";
-    case 5:
+    case WhiteRookId:
       return "whiteRook";
-    case 6:
+    case WhitePawnId:
       return "whitePawn";
-    case 7:
+    case BlackKingId:
       return "blackKing";
-    case 8:
+    case BlackQueenId:
       return "blackQueen";
-    case 9:
+    case BlackBishopId:
       return "blackBishop";
-    case 10:
+    case BlackKnightId:
       return "blackKnight";
-    case 11:
+    case BlackRookId:
       return "blackRook";
-    case 12:
+    case BlackPawnId:
       return "blackPawn";
     default:
       return "";
