@@ -2,4 +2,4 @@ build/
 .env
 logs.txt
 frontend/node_modules
-frontend/bin
+frontend/dist

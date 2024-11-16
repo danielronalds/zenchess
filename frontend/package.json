@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "esbuild src/index.js --bundle --outfile=bin/main.js --watch",
-    "build": "esbuild src/index.js --minify --bundle --outfile=bin/main.js && tailwindcss -i ./global.css -o ./bin/output.css",
-    "css": "npx tailwindcss -i ./global.css -o ./bin/output.css"
+    "dev": "esbuild src/index.js --bundle --outfile=dist/main.js --watch",
+    "build": "esbuild src/index.js --minify --bundle --outfile=dist/main.js && tailwindcss -i ./global.css -o ./dist/output.css",
+    "css": "npx tailwindcss -i ./global.css -o ./dist/output.css"
   },
   "keywords": [],
   "author": "",

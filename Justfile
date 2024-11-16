@@ -31,7 +31,7 @@ build:
     mv zenchess build/
 
     mkdir build/frontend
-    cp -r frontend/bin build/frontend/
+    cp -r frontend/dist build/frontend/
     cp -r frontend/assets build/frontend/
     cp frontend/index.html build/frontend/
 
